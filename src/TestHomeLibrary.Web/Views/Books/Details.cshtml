@@ -1,0 +1,79 @@
+@model BookDto
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<h1>@Model.Title</h1>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @successMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="card mb-3">
+    <div class="card-header">Карточка книги</div>
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Название</dt>
+            <dd class="col-sm-9">@Model.Title</dd>
+
+            <dt class="col-sm-3">Автор</dt>
+            <dd class="col-sm-9">@Model.Author</dd>
+
+            <dt class="col-sm-3">Год издания</dt>
+            <dd class="col-sm-9">@Model.PublicationYear</dd>
+
+            <dt class="col-sm-3">Издательство</dt>
+            <dd class="col-sm-9">@(Model.Publisher ?? "—")</dd>
+
+            <dt class="col-sm-3">ISBN</dt>
+            <dd class="col-sm-9">@(Model.Isbn ?? "—")</dd>
+
+            <dt class="col-sm-3">Количество страниц</dt>
+            <dd class="col-sm-9">@(Model.PageCount?.ToString() ?? "—")</dd>
+
+            <dt class="col-sm-3">Жанр</dt>
+            <dd class="col-sm-9">@(Model.Genre ?? "—")</dd>
+
+            <dt class="col-sm-3">Заметки</dt>
+            <dd class="col-sm-9">@(Model.Notes ?? "—")</dd>
+
+            <dt class="col-sm-3">Добавлена</dt>
+            <dd class="col-sm-9">@Model.CreatedAt.ToString("yyyy-MM-dd HH:mm") (UTC)</dd>
+
+            <dt class="col-sm-3">Изменена</dt>
+            <dd class="col-sm-9">@(Model.UpdatedAt is null ? "—" : Model.UpdatedAt.Value.ToString("yyyy-MM-dd HH:mm") + " (UTC)")</dd>
+        </dl>
+    </div>
+</div>
+
+<h3>Оглавление</h3>
+<div class="card mb-3">
+    <div class="card-body toc-content">
+        @if (!string.IsNullOrWhiteSpace(Model.TableOfContentsHtml))
+        {
+            @Html.Raw(Model.TableOfContentsHtml)
+        }
+        else
+        {
+            <p class="text-muted mb-0">Оглавление не заполнено.</p>
+        }
+    </div>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(Model.TableOfContentsXml))
+{
+    <details class="mb-3">
+        <summary class="text-muted">Показать XML оглавления</summary>
+        <pre class="border rounded p-2 bg-light mt-2"><code>@Model.TableOfContentsXml</code></pre>
+    </details>
+}
+
+<div class="d-flex gap-2">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Изменить</a>
+    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">Удалить</a>
+    <a asp-action="Index" class="btn btn-outline-secondary">К списку</a>
+</div>

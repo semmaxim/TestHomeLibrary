@@ -1,0 +1,29 @@
+<script src="https://cdn.jsdelivr.net/npm/@@ckeditor/ckeditor5-build-classic@41.4.2/build/ckeditor.js"></script>
+<script>
+    (function () {
+        var textarea = document.getElementById('TableOfContentsHtml');
+        if (!textarea || typeof ClassicEditor === 'undefined') {
+            return;
+        }
+
+        ClassicEditor.create(textarea, {
+            toolbar: [
+                'heading', '|',
+                'bold', 'italic', 'link', '|',
+                'bulletedList', 'numberedList', '|',
+                'blockQuote', 'insertTable', '|',
+                'undo', 'redo'
+            ]
+        }).then(function (editor) {
+            window.tocEditor = editor;
+            var form = textarea.closest('form');
+            if (form) {
+                form.addEventListener('submit', function () {
+                    textarea.value = editor.getData();
+                });
+            }
+        }).catch(function (error) {
+            console.error('CKEditor init failed:', error);
+        });
+    })();
+</script>
